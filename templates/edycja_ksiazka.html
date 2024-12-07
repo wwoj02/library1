@@ -1,0 +1,18 @@
+{% extends 'glowny.html' %}
+{% load bootstrap %}
+{% block tytul %} Edytuj ksiazke {% endblock %}
+
+{% block strona %}
+<div class="card" style="width: 28rem;">
+  <div class="card-body">
+      <h5 class="card-title">Edycja</h5>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <button type="submit">Zapisz zmiany <i class="fa-solid fa-pen-to-square"></i></button>
+    </form>
+  </div>
+</div>
+    <a href="{% url 'wszystkie_ksiazki' %}">Cofnij</a>
+
+{% endblock %}

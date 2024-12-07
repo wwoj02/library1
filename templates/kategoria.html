@@ -1,0 +1,74 @@
+{% extends 'glowny.html' %}
+
+{% block tytul %} Lista kategorii {% endblock %}
+{% block strona %}
+    <div class="jumbotron position-relative">
+        {% if user.is_authenticated %}
+          <h1 class="display-4">Witaj {{ user.username }}!</h1>
+          <div class="dropdown position-absolute top-0 end-0 m-3">
+              <button class="btn btn-link text-success p-0" type="button" id="dropdownIconButton" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-address-book fa-2x"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownIconButton">
+                  <li><a class="dropdown-item" href="#">Profil</a></li>
+                  <li><a class="dropdown-item" href="#">Ustawienia</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+              </ul>
+          </div>
+        {% else %}
+          <a class="btn btn-primary mt-2">Zarejestruj się</a>
+          <a href="{% url 'login' %}" class="btn btn-primary mt-2">Zaloguj się</a>
+        {% endif %}
+        <p class="lead">Biblioteka internetowa im. Jacka Sutryka</p>
+    </div>
+
+    <hr>
+
+    <a href="#" class="btn btn-success">Dodaj kategorię <i class="fa-solid fa-folder-plus"></i></a>
+    <a href="{% url 'wszystkie_ksiazki' %}" class="btn btn-success">Powrót na stronę główną <i class="fa-solid fa-house"></i></a>
+
+    <div class="input-group my-4" style="width: 26rem;">
+        <input type="text" name="q" class="form-control" placeholder="Szukaj kategorii..." value="{{ request.GET.q }}">
+        <div class="input-group-append">
+            <button class="btn btn-success" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+    </div>
+
+    {% if kategorie|length == 0 %}
+        <h2>Brak kategorii</h2>
+    {% else %}
+        <div class="row">
+            {% for kategoria in kategorie %}
+                <div class="col-md-4 mb-4">
+                    <div class="card" style="width: 100%;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-9">
+                                    <h5 class="card-title">{{ kategoria.nazwa }}</h5>
+                                </div>
+                                <div class="col-3">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa-solid fa-bars"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            {% if user.is_authenticated %}
+                                            <li><a class="dropdown-item" href="#">Edytuj kategorię</a></li>
+                                            <li><a class="dropdown-item" href="#">Usuń kategorię</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            {% endif %}
+                                            <li><a class="dropdown-item" href="#">Przeglądaj książki</a></li>
+                                            <li><a class="dropdown-item">Inna akcja</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="card-text">{{ kategoria.opis }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

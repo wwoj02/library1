@@ -1,0 +1,13 @@
+{% extends 'glowny.html' %}
+
+{% block tytul %} Potwierdz {% endblock %}
+
+{% block strona %}
+
+    <h1>Czy napewno chcesz usunac pozycję {{ ksiazka.tytul }}?</h1>
+    <form method="post">
+        <button type="submit">Usun ksiazke</button>
+    </form>
+    <a href="{% url 'wszystkie_ksiazki' %}">Cofnij</a>
+
+{% endblock %}
