@@ -1,0 +1,53 @@
+{% extends 'glowny.html' %}
+
+{% block tytul %}Twój Profil{% endblock %}
+
+{% block strona %}
+<div class="container mt-4">
+    <h2>Twój Profil</h2>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Imię:</strong> {{ first_name }}</li>
+        <li class="list-group-item"><strong>Nazwisko:</strong> {{ last_name }}</li>
+        <li class="list-group-item"><strong>Email:</strong> {{ email }}</li>
+        <li class="list-group-item"><strong>Data dołączenia:</strong> {{ date_joined|date:"d-m-Y H:i" }}</li>
+        <li class="list-group-item"><strong>Liczba aktywnych wypożyczeń:</strong> {{ liczba_wypozyczen }}</li>
+    </ul>
+
+    <!-- Sekcja aktywnych wypożyczeń -->
+    <h3 class="mt-4">Twoje aktywne wypożyczenia</h3>
+    {% if aktywne_wypozyczenia %}
+        <ul class="list-group">
+            {% for wypozyczenie in aktywne_wypozyczenia %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>{{ wypozyczenie.ksiazka.tytul }}</strong> -
+                        Termin zwrotu: {{ wypozyczenie.termin_zwrotu|date:"d-m-Y" }}
+                    </div>
+                    <!-- Przycisk zwrotu książki -->
+                    <a href="{% url 'zwroc_ksiazke' wypozyczenie.id %}" class="btn btn-danger btn-sm">
+                        Zwróć książkę
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nie masz aktywnych wypożyczeń.</p>
+    {% endif %}
+
+    <!-- Sekcja historii wypożyczeń -->
+    <h3 class="mt-4">Historia wypożyczeń</h3>
+    {% if historia_wypozyczen %}
+        <ul class="list-group">
+            {% for wypozyczenie in historia_wypozyczen %}
+                <li class="list-group-item">
+                    <strong>{{ wypozyczenie.ksiazka.tytul }}</strong>
+                    - Wypożyczono: {{ wypozyczenie.data_wypozyczenia|date:"d-m-Y" }}
+                    - Zwrot: {{ wypozyczenie.data_zwrotu|date:"d-m-Y" }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nie masz historii wypożyczeń.</p>
+    {% endif %}
+</div>
+{% endblock %}

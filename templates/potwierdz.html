@@ -4,9 +4,10 @@
 
 {% block strona %}
 
-    <h1>Czy napewno chcesz usunac pozycję {{ ksiazka.tytul }}?</h1>
+    <h1>Czy na pewno chcesz usunąć pozycję {{ ksiazka.tytul }}?</h1>
     <form method="post">
-        <button type="submit">Usun ksiazke</button>
+        {% csrf_token %}
+        <button type="submit">Usuń książkę</button>
     </form>
     <a href="{% url 'wszystkie_ksiazki' %}">Cofnij</a>
 

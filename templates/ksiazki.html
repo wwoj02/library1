@@ -4,7 +4,7 @@
 {% block strona %}
 <div class="jumbotron position-relative">
     <div class="d-flex align-items-center justify-content-between">
-        <h1 class="display-4">Biblioteka internetowa im. Jacka Sutryka</h1>
+        <h1 class="display-4">Biblioteka internetowa</h1>
         <div>
             {% if user.is_authenticated %}
                 <div class="dropdown d-inline">
@@ -12,14 +12,14 @@
                         <i class="fa-solid fa-address-book fa-2x"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownIconButton">
-                        <li><a class="dropdown-item" href="#">Profil</a></li>
-                        <li><a class="dropdown-item" href="#">Ustawienia</a></li>
+                        <li><a class="dropdown-item" href="{% url 'profil' %}">Profil</a></li>
+                        <li><a class="dropdown-item" href="{% url 'ustawienia' %}">Zmien haslo</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
                     </ul>
                 </div>
             {% else %}
-                <a href="#" class="btn btn-primary mx-1">Zarejestruj się</a>
+                <a href="{% url 'rejestracja' %}" class="btn btn-primary mx-1">Zarejestruj się</a>
                 <a href="{% url 'login' %}" class="btn btn-primary mx-1">Zaloguj się</a>
             {% endif %}
         </div>
@@ -29,7 +29,7 @@
 
 
     <hr>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and user.is_superuser %}
     <a href="{% url 'nowa_ksiazka' %}" class="btn btn-success">Nowa książka <i class="fa-solid fa-book"></i></a>
     {% endif %}
     <a href="{% url 'kategoria' %}" class="btn btn-success"> Kategoria <i class="fa-solid fa-list"></i> </i> </a>
@@ -37,13 +37,14 @@
     <a class="btn btn-success"> Czytelnicy <i class="fa-solid fa-book-open"></i> </a>
     <a class="btn btn-success"> Kontakt <i class="fa-solid fa-phone"></i></i> </a>
     <a class="btn btn-success">Najczęstsze pytania <i class="fa-regular fa-circle-question"></i></i></i> </a>
-
-    <div class="input-group my-4" style="width: 30rem;">
-        <input type="text" name="q" class="form-control" placeholder="Szukaj książki..." value="{{ request.GET.q }}">
-        <div class="input-group-append">
-            <button class="btn btn-success" type="submit"> <i class="fa-solid fa-magnifying-glass"> </i></button>
+    <form method="get" action="{% url 'wszystkie_ksiazki' %}">
+        <div class="input-group my-4" style="width: 30rem;">
+            <input type="text" name="q" class="form-control" placeholder="Szukaj książki..." value="{{ query }}">
+            <div class="input-group-append">
+                <button class="btn btn-success" type="submit"> <i class="fa-solid fa-magnifying-glass"> </i></button>
+            </div>
         </div>
-    </div>
+    </form>
 
     {% if ksiazki|length == 0 %}
         <h2>Brak książek</h2>
@@ -63,13 +64,20 @@
                                             <i class="fa-solid fa-bars"></i>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            {% if user.is_authenticated %}
-                                            <li><a class="dropdown-item" href="{% url 'edytuj_ksiazke' ksiazka.id %}">Edytuj książkę</a></li>
-                                            <li><a class="dropdown-item" href="{% url 'usun_ksiazke' ksiazka.id %}">Usuń książkę</a></li>
-                                            <li><hr class="dropdown-divider"></li>
+                                            {% if user.is_authenticated and user.is_superuser %}
+                                                <li><a class="dropdown-item" href="{% url 'edytuj_ksiazke' ksiazka.id %}">Edytuj książkę</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'usun_ksiazke' ksiazka.id %}">Usuń książkę</a></li>
+                                                <li><hr class="dropdown-divider"></li>
                                             {% endif %}
-                                            <li><a class="dropdown-item" href="#">Sprawdź dostępność</a></li>
-                                            <li><a class="dropdown-item">Inna akcja</a></li>
+                                            {% if user.is_authenticated %}
+                                                <li><a class="dropdown-item" href="{% url 'wypozycz_ksiazke' ksiazka.id %}">Wypożycz książkę</a></li>
+                                            {% endif %}
+                                            <li>
+                                                <a class="dropdown-item" href="#" onclick="sprawdzDostepnosc({{ ksiazka.id }}); return false;">
+                                                    Sprawdź dostępność
+                                                </a>
+                                            </li>
+                                            <li><a class="dropdown-item" href="#">Inna akcja</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -82,3 +90,5 @@
         </div>
     {% endif %}
 {% endblock %}
+
+

@@ -1,0 +1,15 @@
+{% extends 'glowny.html' %}
+
+{% block tytul %}Wypożycz Książkę{% endblock %}
+
+{% block strona %}
+<div class="container mt-4">
+    <h2>Wypożycz Książkę</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Wypożycz</button>
+    </form>
+    <a href="{% url 'wszystkie_ksiazki' %}" class="btn btn-secondary mt-2">Powrót</a>
+</div>
+{% endblock %}
